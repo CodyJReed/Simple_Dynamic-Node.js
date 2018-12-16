@@ -1,10 +1,11 @@
 const Profile = require("./profile.js");
+const render = require("./render.js");
 // 2. Handle HTTP route Get / and POST/ i.e Home
 
 function home(request, response) {
   if (request.url === "/") {
     response.writeHead(200, { "Content-Type": "text/plain" });
-    response.write("Header\n");
+    render.view("header", {}, response);
     response.write("Search\n");
     response.end("Footer\n");
   }
