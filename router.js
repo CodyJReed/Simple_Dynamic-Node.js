@@ -6,8 +6,9 @@ function home(request, response) {
   if (request.url === "/") {
     response.writeHead(200, { "Content-Type": "text/plain" });
     render.view("header", {}, response);
-    response.write("Search\n");
-    response.end("Footer\n");
+    render.view("search", {}, response);
+    render.view("footer", {}, response);
+    response.end();
   }
 }
 
@@ -17,7 +18,7 @@ function user(request, response) {
   const username = request.url.replace("/", "");
   if (username.length > 0) {
     response.writeHead(200, { "Content-Type": "text/plain" });
-    response.write("Header\n");
+    render.view("header", {}, response);
 
     // get json from Treehouse
     const studentProfile = new Profile(username);
@@ -33,15 +34,18 @@ function user(request, response) {
         javascriptPoints: profileJSON.points.JavaScript
       };
       // Simple response
-      response.write(`${values.username} has ${values.badges} badges\n`);
-      response.end("Footer\n");
+      render.view("profile", values, response);
+      render.view("footer", {}, response);
+      response.end();
     });
 
     // on error
     studentProfile.on("error", error => {
       // show error
-      response.write(`${error.message}\n`);
-      response.end("Footer\n");
+      render.view("error", { errorMessage: error.message }, response);
+      render.view("search", {}, response);
+      render.view("footer", {}, response);
+      response.end();
     });
   }
 }
