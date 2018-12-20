@@ -1,16 +1,24 @@
 const Profile = require("./profile.js");
 const render = require("./render.js");
-
-const commonHeaders = { "Content-Type": "text/plain" };
+const querystring = require("querystring");
+const commonHeaders = { "Content-Type": "text/html" };
 // 2. Handle HTTP route Get / and POST/ i.e Home
 
 function home(request, response) {
   if (request.url === "/") {
-    response.writeHead(200, { "Content-Type": "text/plain" });
-    render.view("header", {}, response);
-    render.view("search", {}, response);
-    render.view("footer", {}, response);
-    response.end();
+    if (request.method.toLowerCase() === "get") {
+      response.writeHead(200, commonHeaders);
+      render.view("header", {}, response);
+      render.view("search", {}, response);
+      render.view("footer", {}, response);
+      response.end();
+    } else {
+      request.on("data", postBody => {
+        const query = querystring.parse(postBody.toString());
+        response.writeHead(303, { location: `/${query.username}` });
+        response.end();
+      });
+    }
   }
 }
 
@@ -19,7 +27,7 @@ function home(request, response) {
 function user(request, response) {
   const username = request.url.replace("/", "");
   if (username.length > 0) {
-    response.writeHead(200, { "Content-Type": "text/plain" });
+    response.writeHead(200, commonHeaders);
     render.view("header", {}, response);
 
     // get json from Treehouse
