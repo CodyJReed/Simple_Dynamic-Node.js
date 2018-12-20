@@ -1,5 +1,7 @@
 const Profile = require("./profile.js");
 const render = require("./render.js");
+
+const commonHeaders = { "Content-Type": "text/plain" };
 // 2. Handle HTTP route Get / and POST/ i.e Home
 
 function home(request, response) {
